@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Card from "./components/Card";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const API_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
@@ -15,7 +16,10 @@ const App = () => {
 
   const fetchMovies = async () => {
     try {
-      const response = await fetch(API_BASE_URL, API_OPTIONS);
+      const response = await fetch(
+        `${API_BASE_URL}?sort_by=popularity.desc`,
+        API_OPTIONS,
+      );
       const data = await response.json();
       setMovies(data.results);
       console.log(data.results);
@@ -63,23 +67,7 @@ const App = () => {
               className="flex flex-col bg-[#361159] rounded-2xl"
               key={movie.id}
             >
-              <img
-                className="z-20 max-w-80 h-auto object-contain m-10 rounded-2xl"
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt="Movie poster"
-              />
-              <div className="flex flex-col gap-4 z-20 p-5">
-                <h3 className="font-bold">{movie.title}</h3>
-                <div className="flex gap-2 items-center z-20">
-                  <div>
-                    <img src="/images/star-1.png" alt="" />
-                  </div>
-                  <span>•</span>
-                  <span>{movie.vote_average.toFixed(1)}</span>
-                  <span>•</span>
-                  <span>{movie.release_date.slice(0, 4)}</span>
-                </div>
-              </div>
+              <Card movie={movie} />
             </div>
           ))}
         </div>
