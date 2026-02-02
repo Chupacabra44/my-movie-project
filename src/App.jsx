@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import Card from "./components/Card";
+import Search from "./components/Search";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const API_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
@@ -64,15 +65,9 @@ const App = () => {
         </span>{" "}
         You'll Enjoy <br /> Without the Hassle
       </h1>
-      <section className="text-white flex justify-center items-center gap-2 mt-12 border border-white max-w-md mx-auto p-4 rounded-lg bg-[#5a5a5a]">
-        <img src="images/search.png" alt="Search icon" />
-        <input
-          className="w-full"
-          placeholder="Search through thousands of movies"
-          onChange={(e) => setSearchTerm(e.target.value)}
-          value={searchTerm}
-        />
-      </section>
+
+      <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
       <section className="flex flex-col mt-12 px-8 text-white">
         <h2 className="text-4xl z-10 ps-14 mt-14 relative">All Movies</h2>
         <div className="flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">
