@@ -3,6 +3,7 @@ import Card from "./components/Card";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const API_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
+const SEARCH_API_URL = "https://api.themoviedb.org/3/search/movie";
 const API_OPTIONS = {
   method: "GET",
   headers: {
@@ -13,13 +14,14 @@ const API_OPTIONS = {
 
 const App = () => {
   const [movies, setMovies] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchMovies = async () => {
+  const fetchMovies = async (query = "") => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}?sort_by=popularity.desc`,
-        API_OPTIONS,
-      );
+      const endpoint = query
+        ? `${SEARCH_API_URL}?query=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}?sort_by=popularity.desc`;
+      const response = await fetch(endpoint, API_OPTIONS);
       const data = await response.json();
       setMovies(data.results);
       console.log(data.results);
@@ -29,8 +31,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    fetchMovies(searchTerm);
+  }, [searchTerm]);
 
   return (
     <>
@@ -59,6 +61,15 @@ const App = () => {
         </span>{" "}
         You'll Enjoy <br /> Without the Hassle
       </h1>
+      <section className="text-white flex justify-center items-center gap-2 mt-12 border border-white max-w-md mx-auto p-4 rounded-lg bg-[#5a5a5a]">
+        <img src="images/search.png" alt="Search icon" />
+        <input
+          className="w-full"
+          placeholder="Search through thousands of movies"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchTerm}
+        />
+      </section>
       <section className="flex flex-col mt-12 px-8 text-white">
         <h2 className="text-4xl z-10 ps-14 mt-14 relative">All Movies</h2>
         <div className="flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">
