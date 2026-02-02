@@ -4,7 +4,11 @@ const Card = ({ movie }) => {
     <>
       <img
         className="z-20 max-w-80 h-auto object-contain m-10 rounded-2xl"
-        src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+        src={
+          poster_path
+            ? `https://image.tmdb.org/t/p/w500${poster_path}`
+            : "images/No-Poster.png"
+        }
         alt="Movie poster"
       />
       <div className="flex flex-col gap-4 z-20 p-5">

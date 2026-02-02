@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDebounce } from "use-debounce";
 import Card from "./components/Card";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -16,6 +17,8 @@ const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+
   const fetchMovies = async (query = "") => {
     try {
       const endpoint = query
@@ -31,8 +34,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchMovies(searchTerm);
-  }, [searchTerm]);
+    fetchMovies(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
 
   return (
     <>
