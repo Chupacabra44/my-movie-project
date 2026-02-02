@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+body {
+  background: #050014;
+}
+
 .overlay {
   background-image: url("/images/BG.png");
   position: absolute;
