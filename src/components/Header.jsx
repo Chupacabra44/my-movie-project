@@ -1,12 +1,15 @@
+import { Link } from "react-router";
 const Header = () => {
   return (
     <header className="flex justify-between items-center p-4 bg-[#58225a] text-white">
-      <span>Logo</span>
+      <Link to="/">
+        <img src="/images/logo.png" alt="" width={40} />
+      </Link>
       <nav className="space-x-4">
         <ul className="flex space-x-4 gap-2">
-          <li>Home</li>
-          <li>Info</li>
-          <li>Contact</li>
+          <Link to="/">Home</Link>
+          <Link to="/info">Info</Link>
+          <Link to="/contact">Contact</Link>
         </ul>
       </nav>
     </header>

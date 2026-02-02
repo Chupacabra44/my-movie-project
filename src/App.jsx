@@ -1,3 +1,4 @@
+import { BrowserRouter, Routes, Route } from "react-router";
 import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import Header from "./components/Header";
@@ -41,17 +42,26 @@ const App = () => {
   }, [debouncedSearchTerm]);
 
   return (
-    <>
+    <BrowserRouter>
       <Header />
-      <div className="overlay"></div>
-      <div className="hero-section flex flex-col items-center justify-center text-center p-8">
-        <Hero />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <div className="overlay"></div>
+              <div className="hero-section flex flex-col items-center justify-center text-center p-8">
+                <Hero />
 
-        <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
-        <Movies movies={movies} />
-      </div>
-    </>
+                <Movies movies={movies} />
+              </div>
+            </>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
