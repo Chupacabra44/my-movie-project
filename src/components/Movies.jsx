@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import Card from "./Card.jsx";
 
 const Movies = ({ movies }) => {
@@ -10,7 +11,12 @@ const Movies = ({ movies }) => {
             className="flex flex-col bg-[#361159] rounded-2xl"
             key={movie.id}
           >
-            <Card movie={movie} />
+            <Link
+              to={`/movie/${movie.id}`}
+              className="block hover:scale-105 transition"
+            >
+              <Card movie={movie} />
+            </Link>
           </div>
         ))}
       </div>

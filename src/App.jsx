@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Movies from "./components/Movies";
 import Search from "./components/Search";
+import DetailMovie from "./components/DetailMovie";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const API_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
@@ -43,6 +44,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <title>Movies project</title>
       <Header />
       <Routes>
         <Route
@@ -60,6 +62,9 @@ const App = () => {
             </>
           }
         />
+        <Route path="/info" element={<div>Info Page</div>} />
+        <Route path="/contact" element={<div>Contact Page</div>} />
+        <Route path="/movie/:id" element={<DetailMovie movies={movies} />} />
       </Routes>
     </BrowserRouter>
   );

@@ -12,7 +12,7 @@ const Card = ({ movie }) => {
         alt="Movie poster"
       />
       <div className="flex flex-col gap-4 z-20 p-5">
-        <h3 className="font-bold">{title}</h3>
+        <h3 className="text-left font-bold">{title}</h3>
         <div className="flex gap-2 items-center z-20">
           <div>
             <img src="/images/star-1.png" alt="" />
