@@ -3,7 +3,7 @@ const Card = ({ movie }) => {
   return (
     <>
       <img
-        className="z-20 max-w-80 h-auto object-contain m-10 rounded-2xl"
+        className="z-20 max-w-72 h-auto object-contain m-10 rounded-2xl"
         src={
           poster_path
             ? `https://image.tmdb.org/t/p/w500${poster_path}`

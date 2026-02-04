@@ -44,7 +44,6 @@ const DetailMovie = ({ movies }) => {
       const dataVideos = await responseVideos.json();
       const dataCredits = await movieCredits.json();
       setCredits(dataCredits.cast);
-      console.log(dataCredits);
       setMovieVideos(dataVideos.results);
       setGenres(data.genres);
     } catch (error) {
@@ -78,8 +77,6 @@ const DetailMovie = ({ movies }) => {
     .map((credit) => credit.name)
     .join(", ");
 
-  console.log(creditsList);
-
   if (loading) {
     return <div className="text-white p-12">Loading...</div>;
   }
@@ -87,7 +84,7 @@ const DetailMovie = ({ movies }) => {
   return (
     <>
       <title>{original_title}</title>
-      <div className="flex flex-row p-12 justify-around text-white mt-12">
+      <div className="flex flex-row p-12 justify-evenly text-white mt-12">
         <div className="max-w-md">
           <img
             src={
@@ -104,17 +101,33 @@ const DetailMovie = ({ movies }) => {
             Genre: {genreName}
           </p>
           <p>
-            <span className="font-semibold">Overview: </span>
+            <span className="font-bold">Overview: </span>
             {overview}
           </p>
           <p className="mt-6">
-            Original language: {original_language.toUpperCase()}
+            <span className="font-bold">Original language: </span>
+            {original_language.toUpperCase()}
           </p>
-          <p className="mt-3">Release year: {release_date.slice(0, 4)}</p>
-          <p className="mt-3">Cast members: {creditsList}</p>
+          <p className="mt-3">
+            <span className="font-bold">Release year: </span>
+            {release_date.slice(0, 4)}
+          </p>
+          <p className="mt-3">
+            <span className="font-bold">Cast members: </span>
+            {creditsList}
+          </p>
+          <img
+            className={`max-w-md mt-6 ${!backdrop_path ? "max-h-1/3" : ""}`}
+            src={
+              backdrop_path
+                ? `https://image.tmdb.org/t/p/w780${backdrop_path}`
+                : "/images/No-Poster.png"
+            }
+            alt="Image of the movie backdrop"
+          />
         </div>
       </div>
-      <div className="px-12">
+      <div className="mt-12">
         {video ? (
           <iframe
             width="1000"
