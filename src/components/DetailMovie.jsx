@@ -6,6 +6,8 @@ const DetailMovie = ({ movies }) => {
   const movie = movies.find((movie) => movie.id === Number(id));
   const [genres, setGenres] = useState([]);
   const [movieVideos, setMovieVideos] = useState([]);
+  const [credits, setCredits] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const {
     backdrop_path,
@@ -31,14 +33,24 @@ const DetailMovie = ({ movies }) => {
 
   const fetchGenres = async () => {
     try {
+      setLoading(true);
       const response = await fetch(MOVIE_GENRE_URL, API_OPTIONS);
       const responseVideos = await fetch(MOVIE_VIDEOS_URL, API_OPTIONS);
+      const movieCredits = await fetch(
+        `https://api.themoviedb.org/3/movie/${id}/credits`,
+        API_OPTIONS,
+      );
       const data = await response.json();
       const dataVideos = await responseVideos.json();
+      const dataCredits = await movieCredits.json();
+      setCredits(dataCredits.cast);
+      console.log(dataCredits);
       setMovieVideos(dataVideos.results);
       setGenres(data.genres);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,9 +72,17 @@ const DetailMovie = ({ movies }) => {
   const video = trailer
     ? `https://www.youtube.com/embed/${trailer?.key}`
     : null;
-  const undefinedVideo = `https://www.youtube.com/embed/undefined`;
 
-  console.log(video);
+  const creditsList = credits
+    .slice(0, 5)
+    .map((credit) => credit.name)
+    .join(", ");
+
+  console.log(creditsList);
+
+  if (loading) {
+    return <div className="text-white p-12">Loading...</div>;
+  }
 
   return (
     <>
@@ -91,13 +111,14 @@ const DetailMovie = ({ movies }) => {
             Original language: {original_language.toUpperCase()}
           </p>
           <p className="mt-3">Release year: {release_date.slice(0, 4)}</p>
+          <p className="mt-3">Cast members: {creditsList}</p>
         </div>
       </div>
       <div className="px-12">
         {video ? (
           <iframe
             width="1000"
-            height="400"
+            height="600"
             src={video}
             title={original_title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -106,7 +127,7 @@ const DetailMovie = ({ movies }) => {
           />
         ) : (
           <img
-            className="w-full h-auto object-cover mt-12 bg-linear-to-tr from-[#991ff7] to-[#ac4af2] p-1 rounded-2xl"
+            className="mt-12 bg-linear-to-tr from-[#991ff7] to-[#ac4af2] p-1 rounded-2xl"
             src={
               backdrop_path
                 ? `https://image.tmdb.org/t/p/w1280${backdrop_path}`
