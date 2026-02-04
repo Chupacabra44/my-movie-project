@@ -1,28 +1,16 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
-const DetailMovie = ({ movies }) => {
+const DetailMovie = () => {
   const { id } = useParams();
-  const movie = movies.find((movie) => movie.id === Number(id));
-  const [genres, setGenres] = useState([]);
+
+  const [movie, setMovie] = useState(null);
   const [movieVideos, setMovieVideos] = useState([]);
   const [credits, setCredits] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const {
-    backdrop_path,
-    original_title,
-    overview,
-    poster_path,
-    genre_ids,
-    original_language,
-    release_date,
-  } = movie || {};
+  const [loading, setLoading] = useState(true);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-  const MOVIE_GENRE_URL =
-    "https://api.themoviedb.org/3/genre/movie/list?language=en";
-  const MOVIE_VIDEOS_URL = `https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`;
+
   const API_OPTIONS = {
     method: "GET",
     headers: {
@@ -31,62 +19,78 @@ const DetailMovie = ({ movies }) => {
     },
   };
 
-  const fetchGenres = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(MOVIE_GENRE_URL, API_OPTIONS);
-      const responseVideos = await fetch(MOVIE_VIDEOS_URL, API_OPTIONS);
-      const movieCredits = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}/credits`,
-        API_OPTIONS,
-      );
-      const data = await response.json();
-      const dataVideos = await responseVideos.json();
-      const dataCredits = await movieCredits.json();
-      setCredits(dataCredits.cast);
-      setMovieVideos(dataVideos.results);
-      setGenres(data.genres);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchGenres();
-  }, []);
+    const fetchMovieDetails = async () => {
+      try {
+        setLoading(true);
 
-  if (!movie) {
-    return <div className="text-white p-12">Movie not found.</div>;
-  }
+        const [movieRes, videosRes, creditsRes] = await Promise.all([
+          fetch(`https://api.themoviedb.org/3/movie/${id}`, API_OPTIONS),
+          fetch(`https://api.themoviedb.org/3/movie/${id}/videos`, API_OPTIONS),
+          fetch(
+            `https://api.themoviedb.org/3/movie/${id}/credits`,
+            API_OPTIONS,
+          ),
+        ]);
 
-  const movieGenres = genres.filter((genre) => genre_ids?.includes(genre.id));
-  const genreName = movieGenres.map((genre) => genre.name).join(", ");
+        const movieData = await movieRes.json();
+        const videosData = await videosRes.json();
+        const creditsData = await creditsRes.json();
 
-  const trailer = movieVideos.find(
-    (video) => video.type === "Trailer" && video.site === "YouTube",
-  );
+        setMovie(movieData);
+        setMovieVideos(videosData.results || []);
+        setCredits(creditsData.cast || []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch movie details:", error);
+        setLoading(false);
+      }
+    };
 
-  const video = trailer
-    ? `https://www.youtube.com/embed/${trailer?.key}`
-    : null;
-
-  const creditsList = credits
-    .slice(0, 5)
-    .map((credit) => credit.name)
-    .join(", ");
+    fetchMovieDetails();
+  }, [id]);
 
   if (loading) {
     return <div className="text-white p-12">Loading...</div>;
   }
 
+  if (!movie) {
+    return <div className="text-white p-12">Movie not found.</div>;
+  }
+
+  const {
+    backdrop_path,
+    original_title,
+    overview,
+    poster_path,
+    genres,
+    original_language,
+    release_date,
+  } = movie;
+
+  const genreName = genres?.map((g) => g.name).join(", ");
+
+  const trailer = movieVideos.find(
+    (video) => video.type === "Trailer" && video.site === "YouTube",
+  );
+
+  const videoUrl = trailer
+    ? `https://www.youtube.com/embed/${trailer?.key}`
+    : null;
+
+  const castList = credits
+    .slice(0, 7)
+    .map((person) => person.name)
+    .join(", ");
+
   return (
     <>
       <title>{original_title}</title>
-      <div className="flex flex-row p-12 justify-evenly text-white mt-12">
+
+      <div className="flex flex-row p-12 justify-evenly text-white mt-12 flex-wrap gap-10">
         <div className="max-w-md">
           <img
+            className="rounded-2xl"
             src={
               poster_path
                 ? `https://image.tmdb.org/t/p/w500${poster_path}`
@@ -95,59 +99,59 @@ const DetailMovie = ({ movies }) => {
             alt={original_title}
           />
         </div>
+
         <div className="max-w-lg">
-          <h2 className="text-3xl font-bold mb-8">{original_title}</h2>
-          <p className="font-bold text-lg mb-6 bg-linear-to-r from-[#ccc5ff] to-[#a955fd] bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold mb-6">{original_title}</h2>
+
+          <p className="font-bold text-lg mb-4 bg-linear-to-r from-[#ccc5ff] to-[#a955fd] bg-clip-text text-transparent">
             Genre: {genreName}
           </p>
-          <p>
-            <span className="font-bold">Overview: </span>
-            {overview}
+
+          <p className="mb-4">
+            <span className="font-bold">Overview:</span> {overview}
           </p>
-          <p className="mt-6">
-            <span className="font-bold">Original language: </span>
-            {original_language.toUpperCase()}
+
+          <p className="mb-2">
+            <span className="font-bold">Language:</span>{" "}
+            {original_language?.toUpperCase()}
           </p>
-          <p className="mt-3">
-            <span className="font-bold">Release year: </span>
-            {release_date.slice(0, 4)}
+
+          <p className="mb-2">
+            <span className="font-bold">Release year:</span>{" "}
+            {release_date?.slice(0, 4)}
           </p>
-          <p className="mt-3">
-            <span className="font-bold">Cast members: </span>
-            {creditsList}
+
+          <p className="mb-4">
+            <span className="font-bold">Cast:</span> {castList}
           </p>
+
           <img
-            className={`max-w-md mt-6 ${!backdrop_path ? "max-h-1/3" : ""}`}
+            className={`max-w-md mt-6 rounded-2xl ${
+              !backdrop_path ? "opacity-80" : ""
+            }`}
             src={
               backdrop_path
                 ? `https://image.tmdb.org/t/p/w780${backdrop_path}`
                 : "/images/No-Poster.png"
             }
-            alt="Image of the movie backdrop"
+            alt="Movie backdrop"
           />
         </div>
       </div>
-      <div className="mt-12">
-        {video ? (
+
+      <div className="mt-12 flex justify-center">
+        {videoUrl ? (
           <iframe
             width="1000"
             height="600"
-            src={video}
+            src={videoUrl}
             title={original_title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            className="object-cover rounded-2xl m-[0_auto] bg-linear-to-tr from-[#991ff7] to-[#d396ff] p-1 rounded-2xl"
+            className="rounded-2xl bg-linear-to-tr from-[#991ff7] to-[#d396ff] p-1"
           />
         ) : (
-          <img
-            className="mt-12 bg-linear-to-tr from-[#991ff7] to-[#ac4af2] p-1 rounded-2xl"
-            src={
-              backdrop_path
-                ? `https://image.tmdb.org/t/p/w1280${backdrop_path}`
-                : "/images/No-Poster.png"
-            }
-            alt={original_title}
-          />
+          <p className="text-white text-center">Trailer not available</p>
         )}
       </div>
     </>
