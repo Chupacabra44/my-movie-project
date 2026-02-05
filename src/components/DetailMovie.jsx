@@ -40,8 +40,14 @@ const DetailMovie = () => {
 
         setMovie(movieData);
         setMovieVideos(videosData.results || []);
-        setCreditsActor(creditsData.cast || []);
-        setCreditsDirector(creditsData.crew || []);
+
+        setCreditsActor((creditsData.cast || []).slice(0, 7));
+
+        setCreditsDirector(
+          (creditsData.crew || []).filter(
+            (person) => person.job === "Director",
+          ),
+        );
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch movie details:", error);
@@ -79,18 +85,6 @@ const DetailMovie = () => {
   const videoUrl = trailer
     ? `https://www.youtube.com/embed/${trailer?.key}`
     : null;
-
-  const castListActor = creditsActor
-    .slice(0, 7)
-    .map((person) => person.name)
-    .join(", ");
-
-  const creditsDirectors = creditsDirector
-    .filter((person) => person.job === "Director")
-    .map((person) => person.name)
-    .join(", ");
-
-  console.log(creditsDirectors);
 
   return (
     <>
@@ -131,11 +125,13 @@ const DetailMovie = () => {
           </p>
 
           <p className="mb-4">
-            <span className="font-bold">Cast:</span> {castListActor}
+            <span className="font-bold">Cast: </span>
+            {creditsActor.map((person) => person.name).join(", ") || "N/A"}
           </p>
 
           <p className="mb-4">
-            <span className="font-bold">Director:</span> {creditsDirectors}
+            <span className="font-bold">Director: </span>
+            {creditsDirector.map((person) => person.name).join(", ") || "N/A"}
           </p>
 
           <img
