@@ -6,8 +6,7 @@ const DetailMovie = () => {
 
   const [movie, setMovie] = useState(null);
   const [movieVideos, setMovieVideos] = useState([]);
-  const [creditsActor, setCreditsActor] = useState([]);
-  const [creditsDirector, setCreditsDirector] = useState([]);
+  const [credits, setCredits] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -40,14 +39,7 @@ const DetailMovie = () => {
 
         setMovie(movieData);
         setMovieVideos(videosData.results || []);
-
-        setCreditsActor((creditsData.cast || []).slice(0, 7));
-
-        setCreditsDirector(
-          (creditsData.crew || []).filter(
-            (person) => person.job === "Director",
-          ),
-        );
+        setCredits(creditsData);
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch movie details:", error);
@@ -85,6 +77,10 @@ const DetailMovie = () => {
   const videoUrl = trailer
     ? `https://www.youtube.com/embed/${trailer?.key}`
     : null;
+
+  const actors = credits?.cast?.slice(0, 7) ?? [];
+  const directors =
+    credits?.crew?.filter((person) => person.job === "Director") ?? [];
 
   return (
     <>
@@ -126,12 +122,12 @@ const DetailMovie = () => {
 
           <p className="mb-4">
             <span className="font-bold">Cast: </span>
-            {creditsActor.map((person) => person.name).join(", ") || "N/A"}
+            {actors.map((person) => person.name).join(", ")}
           </p>
 
           <p className="mb-4">
             <span className="font-bold">Director: </span>
-            {creditsDirector.map((person) => person.name).join(", ") || "N/A"}
+            {directors.map((person) => person.name).join(", ")}
           </p>
 
           <img
