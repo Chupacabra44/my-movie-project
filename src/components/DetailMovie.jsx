@@ -6,7 +6,7 @@ const DetailMovie = () => {
 
   const [movie, setMovie] = useState(null);
   const [movieVideos, setMovieVideos] = useState([]);
-  const [credits, setCredits] = useState(null);
+  const [credits, setCredits] = useState({ actors: [], directors: [] });
   const [loading, setLoading] = useState(true);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -39,7 +39,16 @@ const DetailMovie = () => {
 
         setMovie(movieData);
         setMovieVideos(videosData.results || []);
-        setCredits(creditsData);
+
+        const actorsData = creditsData.cast.slice(0, 7) ?? [];
+        const directorsData =
+          creditsData.crew.filter((person) => person.job === "Director") ?? [];
+
+        setCredits({
+          actors: actorsData,
+          directors: directorsData,
+        });
+
         setLoading(false);
       } catch (error) {
         console.error("Failed to fetch movie details:", error);
@@ -78,10 +87,6 @@ const DetailMovie = () => {
     ? `https://www.youtube.com/embed/${trailer?.key}`
     : null;
 
-  const actors = credits?.cast?.slice(0, 7) ?? [];
-  const directors =
-    credits?.crew?.filter((person) => person.job === "Director") ?? [];
-
   return (
     <>
       <title>{original_title}</title>
@@ -111,23 +116,23 @@ const DetailMovie = () => {
           </p>
 
           <p className="mb-2">
-            <span className="font-bold">Language:</span>{" "}
+            <span className="font-bold">Language: </span>
             {original_language?.toUpperCase()}
           </p>
 
           <p className="mb-2">
-            <span className="font-bold">Release year:</span>{" "}
+            <span className="font-bold">Release year: </span>
             {release_date?.slice(0, 4)}
           </p>
 
           <p className="mb-4">
             <span className="font-bold">Cast: </span>
-            {actors.map((person) => person.name).join(", ")}
+            {credits.actors.map((person) => person.name).join(", ")}
           </p>
 
           <p className="mb-4">
             <span className="font-bold">Director: </span>
-            {directors.map((person) => person.name).join(", ")}
+            {credits.directors.map((person) => person.name).join(", ")}
           </p>
 
           <img
