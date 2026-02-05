@@ -6,6 +6,7 @@ import Hero from "./components/Hero";
 import Movies from "./components/Movies";
 import Search from "./components/Search";
 import DetailMovie from "./components/DetailMovie";
+import RelatedMovies from "./components/RelatedMovies";
 import Footer from "./components/Footer";
 import ScrollButton from "./components/ScrollButton";
 import ScrollToTop from "./components/ScrollToTop";
@@ -71,7 +72,8 @@ const App = () => {
         />
         <Route path="/info" element={<div>Info Page</div>} />
         <Route path="/contact" element={<div>Contact Page</div>} />
-        <Route path="/movie/:id" element={<DetailMovie movies={movies} />} />
+        <Route path="/movie/:id" element={<DetailMovie />} />
+        <Route path="/relatedmovie/:id" element={<RelatedMovies />} />
       </Routes>
       <Footer />
     </BrowserRouter>

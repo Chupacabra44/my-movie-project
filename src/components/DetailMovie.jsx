@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 
 const DetailMovie = () => {
   const { id } = useParams();
@@ -134,7 +134,12 @@ const DetailMovie = () => {
             <span className="font-bold">Director: </span>
             {credits.directors.map((person) => person.name).join(", ")}
           </p>
-
+          <Link
+            to={`/relatedmovie/${id}?genres=${genres.map((g) => g.id)}`}
+            className="inline-block text-2xl my-3 p-2 rounded-full bg-fuchsia-800 text-white shadow-lg hover:bg-fuchsia-900"
+          >
+            Related Movies
+          </Link>
           <img
             className={`max-w-md mt-6 rounded-2xl ${
               !backdrop_path ? "opacity-80" : ""
