@@ -9,6 +9,7 @@ const RelatedMovies = () => {
   const genreId = query.get("genres")?.split(",") || [];
 
   const [relatedMovie, setRelatedMovie] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -23,6 +24,7 @@ const RelatedMovies = () => {
   useEffect(() => {
     const fetchRelatedMovies = async () => {
       try {
+        if (!genreId.length) return;
         const relatedRes = await fetch(
           `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId.join(",")}`,
           API_OPTIONS,
@@ -35,12 +37,17 @@ const RelatedMovies = () => {
         const relatedMovies = await relatedRes.json();
 
         setRelatedMovie(relatedMovies.results);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     fetchRelatedMovies();
   }, [genreId]);
+
+  if (loading) {
+    return <p className="text-white">Loading related movies</p>;
+  }
 
   return (
     <div className="text-white flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">
