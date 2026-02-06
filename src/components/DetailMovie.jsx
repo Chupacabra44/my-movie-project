@@ -136,7 +136,7 @@ const DetailMovie = () => {
           </p>
           <Link
             to={`/relatedmovie/${id}?genres=${genres.map((g) => g.id)}`}
-            className="inline-block text-2xl my-3 p-2 rounded-full bg-fuchsia-800 text-white shadow-lg hover:bg-fuchsia-900"
+            className="inline-block font-bold text-2xl my-3 p-3 rounded-full bg-fuchsia-800 text-white shadow-lg hover:bg-fuchsia-900"
           >
             Related Movies
           </Link>

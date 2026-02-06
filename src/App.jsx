@@ -36,7 +36,6 @@ const App = () => {
       const response = await fetch(endpoint, API_OPTIONS);
       const data = await response.json();
       setMovies(data.results);
-      // console.log(data.results);
     } catch (error) {
       console.log(error);
     }
