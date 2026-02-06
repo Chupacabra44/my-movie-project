@@ -1,6 +1,7 @@
 import { useLocation } from "react-router";
 import { useState, useEffect } from "react";
 import Card from "./Card.jsx";
+import DropdownSort from "./DropdownSort.jsx";
 
 const RelatedMovies = () => {
   const location = useLocation();
@@ -11,6 +12,7 @@ const RelatedMovies = () => {
   const [relatedMovie, setRelatedMovie] = useState([]);
   const [sortBy, setSortBy] = useState("popularity.desc");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -36,50 +38,42 @@ const RelatedMovies = () => {
         }
 
         const relatedMovies = await relatedRes.json();
-
-        setRelatedMovie(relatedMovies.results);
-
         setLoading(false);
+        setRelatedMovie(relatedMovies.results);
       } catch (error) {
         console.log(error);
+        setError("Failed to load movies!");
+        setLoading(false);
       }
     };
     fetchRelatedMovies();
   }, [genreId, sortBy]);
 
-  if (loading) {
-    return <p className="text-white">Loading related movies</p>;
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
   }
 
   return (
     <>
       <div className="flex justify-center items-center">
-        <div className="relative w-48 mt-6">
-          <select
-            onChange={(event) => setSortBy(event.target.value)}
-            value={sortBy}
-            className="appearance-none w-full bg-zinc-900 text-white px-4 py-2 pr-10 rounded-lg border border-zinc-700 focus:outline-none focus:border-zinc-500 cursor-pointer"
-          >
-            <option value="popularity.desc">Popular</option>
-            <option value="vote_average.desc">Rating</option>
-            <option value="release_date.desc">Newest</option>
-          </select>
-
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-white pointer-events-none">
-            ▼
-          </span>
+        <DropdownSort sortBy={sortBy} setSortBy={setSortBy} />
+      </div>
+      {loading ? (
+        <p className="text-white flex justify-center mt-6">
+          Loading related movies
+        </p>
+      ) : (
+        <div className="text-white flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">
+          {relatedMovie.map((movie) => (
+            <div
+              key={movie.id}
+              className="flex flex-col bg-[#361159] rounded-2xl"
+            >
+              <Card movie={movie} />
+            </div>
+          ))}
         </div>
-      </div>
-      <div className="text-white flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">
-        {relatedMovie.map((movie) => (
-          <div
-            key={movie.id}
-            className="flex flex-col bg-[#361159] rounded-2xl"
-          >
-            <Card movie={movie} />
-          </div>
-        ))}
-      </div>
+      )}
     </>
   );
 };
