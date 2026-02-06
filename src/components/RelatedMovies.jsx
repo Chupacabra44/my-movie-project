@@ -13,6 +13,7 @@ const RelatedMovies = () => {
   const [sortBy, setSortBy] = useState("popularity.desc");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -29,7 +30,7 @@ const RelatedMovies = () => {
       try {
         if (!genreId.length) return;
         const relatedRes = await fetch(
-          `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId.join(",")}&sort_by=${sortBy}`,
+          `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId.join(",")}&sort_by=${sortBy}&page=${currentPage}`,
           API_OPTIONS,
         );
 
@@ -38,8 +39,8 @@ const RelatedMovies = () => {
         }
 
         const relatedMovies = await relatedRes.json();
-        setLoading(false);
         setRelatedMovie(relatedMovies.results);
+        setLoading(false);
       } catch (error) {
         console.log(error);
         setError("Failed to load movies!");
@@ -47,7 +48,7 @@ const RelatedMovies = () => {
       }
     };
     fetchRelatedMovies();
-  }, [genreId, sortBy]);
+  }, [genreId, sortBy, currentPage]);
 
   if (error) {
     return <p className="text-red-500">{error}</p>;
@@ -63,16 +64,26 @@ const RelatedMovies = () => {
           Loading related movies
         </p>
       ) : (
-        <div className="text-white flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">
-          {relatedMovie.map((movie) => (
-            <div
-              key={movie.id}
-              className="flex flex-col bg-[#361159] rounded-2xl"
+        <>
+          <div className="text-white flex flex-wrap justify-end m-10 z-20 rounded-2xl">
+            <button
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className="font-bold border-solid border-2 px-4 py-2 rounded-2xl hover:bg-amber-600 hover:text-gray-800 border-amber-300 cursor-pointer"
             >
-              <Card movie={movie} />
-            </div>
-          ))}
-        </div>
+              Page {currentPage} →
+            </button>
+          </div>
+          <div className="text-white flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">
+            {relatedMovie.map((movie) => (
+              <div
+                key={movie.id}
+                className="flex flex-col bg-[#361159] rounded-2xl"
+              >
+                <Card movie={movie} />
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </>
   );
