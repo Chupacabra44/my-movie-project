@@ -10,6 +10,7 @@ import RelatedMovies from "./components/RelatedMovies";
 import Footer from "./components/Footer";
 import ScrollButton from "./components/ScrollButton";
 import ScrollToTop from "./components/ScrollToTop";
+import RelatedMoviesProvider from "./components/RelatedMoviesProvider";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const API_BASE_URL = "https://api.themoviedb.org/3/discover/movie";
@@ -72,7 +73,14 @@ const App = () => {
         <Route path="/info" element={<div>Info Page</div>} />
         <Route path="/contact" element={<div>Contact Page</div>} />
         <Route path="/movie/:id" element={<DetailMovie />} />
-        <Route path="/relatedmovie/:id" element={<RelatedMovies />} />
+        <Route
+          path="/relatedmovie/:id"
+          element={
+            <RelatedMoviesProvider>
+              <RelatedMovies />
+            </RelatedMoviesProvider>
+          }
+        />
       </Routes>
       <Footer />
     </BrowserRouter>
