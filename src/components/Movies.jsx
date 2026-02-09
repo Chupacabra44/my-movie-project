@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import Card from "./Card.jsx";
 import Button from "./Button.jsx";
 
@@ -12,12 +11,7 @@ const Movies = ({ movies, clickToGetMoreMovies }) => {
             className="flex flex-col bg-[#361159] rounded-2xl"
             key={movie.id}
           >
-            <Link
-              to={`/movie/${movie.id}`}
-              className="block hover:scale-105 transition"
-            >
-              <Card movie={movie} />
-            </Link>
+            <Card movie={movie} />
           </div>
         ))}
       </div>

@@ -1,7 +1,12 @@
+import { Link } from "react-router";
+
 const Card = ({ movie }) => {
   const { poster_path, title, vote_average, release_date } = movie;
   return (
-    <>
+    <Link
+      to={`/movie/${movie.id}`}
+      className="block hover:scale-105 transition"
+    >
       <img
         className="z-20 w-72 h-96 object-cover m-10 rounded-2xl"
         src={
@@ -26,7 +31,7 @@ const Card = ({ movie }) => {
           <span>{release_date.slice(0, 4)}</span>
         </div>
       </div>
-    </>
+    </Link>
   );
 };
 
