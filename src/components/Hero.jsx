@@ -10,11 +10,11 @@ const Hero = () => {
         />
       </Link>
 
-      <h1 className="text-white text-6xl font-bold text-center mt-8">
-        Find{" "}
+      <h1 className="text-white text-6xl font-bold text-center mt-8 z-40">
+        Find
         <span className="bg-linear-to-r from-[#ccc5ff] to-[#972eff] bg-clip-text text-transparent">
           Movies
-        </span>{" "}
+        </span>
         You'll Enjoy <br /> Without the Hassle
       </h1>
     </>

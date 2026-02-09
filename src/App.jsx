@@ -47,43 +47,41 @@ const App = () => {
   }, [debouncedSearchTerm]);
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <title>Movies project</title>
-      <Header />
+    <RelatedMoviesProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <title>Movies project</title>
+        <Header />
 
-      <ScrollButton />
+        <ScrollButton />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <div className="overlay"></div>
-              <div className="hero-section flex flex-col items-center justify-center text-center p-8">
-                <Hero />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <div className="overlay"></div>
+                <div className="hero-section flex flex-col items-center justify-center text-center p-8">
+                  <Hero />
 
-                <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                  <Search
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                  />
 
-                <Movies movies={movies} />
-              </div>
-            </>
-          }
-        />
-        <Route path="/info" element={<div>Info Page</div>} />
-        <Route path="/contact" element={<div>Contact Page</div>} />
-        <Route path="/movie/:id" element={<DetailMovie />} />
-        <Route
-          path="/relatedmovie/:id"
-          element={
-            <RelatedMoviesProvider>
-              <RelatedMovies />
-            </RelatedMoviesProvider>
-          }
-        />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
+                  <Movies movies={movies} />
+                </div>
+              </>
+            }
+          />
+          <Route path="/info" element={<div>Info Page</div>} />
+          <Route path="/contact" element={<div>Contact Page</div>} />
+          <Route path="/movie/:id" element={<DetailMovie />} />
+          <Route path="/relatedmovie/:id" element={<RelatedMovies />} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
+    </RelatedMoviesProvider>
   );
 };
 

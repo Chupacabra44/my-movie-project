@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { RelatedMoviesContext } from "./RelatedMoviesContext.jsx";
 import { useLocation } from "react-router";
 import { useState, useEffect } from "react";
 import Card from "./Card.jsx";
@@ -5,15 +7,20 @@ import DropdownSort from "./DropdownSort.jsx";
 
 const RelatedMovies = () => {
   const location = useLocation();
+  const {
+    sortBy,
+    setSortBy,
+    currentPage,
+    setCurrentPage,
+    genreId,
+    setGenreId,
+  } = useContext(RelatedMoviesContext);
 
   const query = new URLSearchParams(location.search);
-  const genreId = query.get("genres")?.split(",") || [];
 
   const [relatedMovie, setRelatedMovie] = useState([]);
-  const [sortBy, setSortBy] = useState("popularity.desc");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
 
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -29,6 +36,7 @@ const RelatedMovies = () => {
     const fetchRelatedMovies = async () => {
       try {
         if (!genreId.length) return;
+        setLoading(true);
         const relatedRes = await fetch(
           `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId.join(",")}&sort_by=${sortBy}&page=${currentPage}`,
           API_OPTIONS,
@@ -49,6 +57,11 @@ const RelatedMovies = () => {
     };
     fetchRelatedMovies();
   }, [genreId, sortBy, currentPage]);
+
+  useEffect(() => {
+    setGenreId(query.get("genres")?.split(",") || []);
+    setCurrentPage(1);
+  }, [location.search]);
 
   if (error) {
     return <p className="text-red-500">{error}</p>;
