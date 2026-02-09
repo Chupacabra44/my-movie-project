@@ -4,6 +4,7 @@ import { useLocation } from "react-router";
 import { useEffect } from "react";
 import Card from "./Card.jsx";
 import DropdownSort from "./DropdownSort.jsx";
+import Button from "./Button.jsx";
 import { useRelatedMovies } from "../hooks/useRelatedMovies.js";
 
 const RelatedMovies = () => {
@@ -50,23 +51,20 @@ const RelatedMovies = () => {
             {currentPage === 1 ? (
               ""
             ) : (
-              <button
+              <Button
                 onClick={() => setCurrentPage((prev) => prev - 1)}
-                className="absolute left-0 font-bold border-solid border-2 px-4 py-2 rounded-2xl hover:bg-amber-600 hover:text-gray-800 border-amber-300 cursor-pointer"
-              >
-                ← Page {currentPage - 1}
-              </button>
+                children={`← Page ${currentPage - 1}`}
+                className="absolute left-0"
+              />
             )}
 
             {!loading && relatedMovie.length === 0 ? (
               <p>No more related movies!</p>
             ) : (
-              <button
+              <Button
                 onClick={() => setCurrentPage((prev) => prev + 1)}
-                className="font-bold border-solid border-2 px-4 py-2 rounded-2xl hover:bg-amber-600 hover:text-gray-800 border-amber-300 cursor-pointer"
-              >
-                Page {currentPage} →
-              </button>
+                children={`Page ${currentPage} →`}
+              />
             )}
           </div>
           <div className="text-white flex flex-wrap flex-row gap-8 justify-center mb-16 min-w-100 m-10 z-20 rounded-2xl">

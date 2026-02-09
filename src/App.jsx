@@ -26,17 +26,23 @@ const API_OPTIONS = {
 const App = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [moviePage, setMoviePage] = useState(1);
 
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
 
-  const fetchMovies = async (query = "") => {
+  const fetchMovies = async (query = "", page = 1) => {
     try {
       const endpoint = query
-        ? `${SEARCH_API_URL}?query=${encodeURIComponent(query)}`
-        : `${API_BASE_URL}?sort_by=popularity.desc`;
+        ? `${SEARCH_API_URL}?query=${encodeURIComponent(query)}&page=${page}`
+        : `${API_BASE_URL}?sort_by=popularity.desc&page=${page}`;
       const response = await fetch(endpoint, API_OPTIONS);
       const data = await response.json();
-      setMovies(data.results);
+
+      if (page === 1) {
+        setMovies(data.results);
+      } else {
+        setMovies((prev) => [...prev, ...data.results]);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -45,6 +51,12 @@ const App = () => {
   useEffect(() => {
     fetchMovies(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
+
+  const clickToGetMoreMovies = () => {
+    const nextPage = moviePage + 1;
+    setMoviePage(nextPage);
+    fetchMovies(debouncedSearchTerm, nextPage);
+  };
 
   return (
     <RelatedMoviesProvider>
@@ -69,7 +81,10 @@ const App = () => {
                     setSearchTerm={setSearchTerm}
                   />
 
-                  <Movies movies={movies} />
+                  <Movies
+                    movies={movies}
+                    clickToGetMoreMovies={clickToGetMoreMovies}
+                  />
                 </div>
               </>
             }

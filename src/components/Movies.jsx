@@ -1,7 +1,8 @@
 import { Link } from "react-router";
 import Card from "./Card.jsx";
+import Button from "./Button.jsx";
 
-const Movies = ({ movies }) => {
+const Movies = ({ movies, clickToGetMoreMovies }) => {
   return (
     <section className="flex flex-col mt-12 px-8 text-white">
       <h2 className="text-4xl z-10 ps-14 mt-14 relative">All Movies</h2>
@@ -20,6 +21,7 @@ const Movies = ({ movies }) => {
           </div>
         ))}
       </div>
+      <Button onClick={clickToGetMoreMovies} children="Load More Movies" />
     </section>
   );
 };
